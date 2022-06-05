@@ -1,3 +1,5 @@
+import { SnackbarProvider } from 'notistack';
+
 // routes
 import Router from './routes';
 // theme
@@ -9,10 +11,18 @@ import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 // ----------------------------------------------------------------------
 export default function App() {
   return (
-    <ThemeProvider>
-      <ScrollToTop />
-      <BaseOptionChartStyle />
-      <Router />
-    </ThemeProvider>
+    <SnackbarProvider
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      maxSnack={3}
+    >
+      <ThemeProvider>
+        <ScrollToTop />
+        <BaseOptionChartStyle />
+        <Router />
+      </ThemeProvider>
+    </SnackbarProvider>
   );
 }

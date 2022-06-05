@@ -2,12 +2,13 @@ import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
+import PrivateOutlet from './HOC/PrivateOutlet';
 //
 import Blog from './pages/Blog';
-import Docs from './pages/User';
+import Docs from './pages/Docs';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
-import Register from './pages/Register';
+import NewDoc from './pages/NewDoc';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 
@@ -17,10 +18,15 @@ export default function Router() {
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: (
+        <PrivateOutlet>
+          <DashboardLayout />
+        </PrivateOutlet>
+      ),
       children: [
         { path: 'annoucement', element: <DashboardApp /> },
         { path: 'docs', element: <Docs /> },
+        { path: 'docs/new', element: <NewDoc /> },
         { path: 'results', element: <Products /> },
         { path: 'schedule', element: <Blog /> },
         { path: 'clubs/:id', element: <Blog /> },
@@ -33,7 +39,6 @@ export default function Router() {
       children: [
         { path: '/', element: <Navigate to="/dashboard/annoucement" /> },
         { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
