@@ -4,7 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import PrivateOutlet from './HOC/PrivateOutlet';
 //
-import Blog from './pages/Blog';
+import Schedule from './pages/Schedule';
 import Docs from './pages/Docs';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
@@ -28,9 +28,9 @@ export default function Router() {
         { path: 'docs', element: <Docs /> },
         { path: 'docs/new', element: <NewDoc /> },
         { path: 'results', element: <Products /> },
-        { path: 'schedule', element: <Blog /> },
-        { path: 'clubs/:id', element: <Blog /> },
-        { path: 'clubs', element: <Blog /> },
+        { path: 'schedule', element: <Schedule /> },
+        { path: 'clubs/:id', element: <Schedule /> },
+        { path: 'clubs', element: <Schedule /> },
       ],
     },
     {

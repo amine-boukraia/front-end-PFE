@@ -36,6 +36,8 @@
     ]
   },
   "dependencies": {
+    "@devexpress/dx-react-scheduler": "^3.0.3",
+    "@devexpress/dx-react-scheduler-material-ui": "^3.0.3",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@faker-js/faker": "^6.1.2",
@@ -50,6 +52,7 @@
     "formik": "^2.2.9",
     "history": "^5.2.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.3",
     "notistack": "^2.0.5",
     "numeral": "^2.0.6",
     "prop-types": "^15.8.1",

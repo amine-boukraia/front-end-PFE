@@ -55,14 +55,14 @@ function NewsItem({ news }) {
 
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
-      <Box component="img" alt={title} src={image} sx={{ width: 48, height: 48, borderRadius: 1.5, flexShrink: 0 }} />
+      <Box component="img" alt={title} src={image} sx={{ width: 200, height: 200, borderRadius: 1.5, flexShrink: 0 }} />
 
-      <Box sx={{ minWidth: 240, flexGrow: 1 }}>
-        <Link color="inherit" variant="subtitle2" noWrap>
+      <Box sx={{ minWidth: 240, flexGrow: 1 ,alignSelf:"flex-start"}}>
+        <Link color="inherit" variant="subtitle2"href="/dashboard/annoucement/">
           {title}
         </Link>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }} >
           {description}
         </Typography>
       </Box>
