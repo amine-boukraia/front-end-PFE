@@ -1,7 +1,8 @@
 import { faker } from '@faker-js/faker';
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Grid, Container, Typography, Button, Box } from "@mui/material";
+import { Link } from "react-router-dom";
 // components
 import Page from '../components/Page';
 import Iconify from '../components/Iconify';
@@ -58,7 +59,7 @@ const announcements = [{
 },]
 export default function DashboardApp() {
   const theme = useTheme();
-
+  const isAdmin = window.location.pathname.includes("/admin")
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
@@ -82,7 +83,13 @@ export default function DashboardApp() {
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary title="Class Stop - First Semester" total="12/10/2022" color="error" icon={'ant-design:calendar-outlined'} />
           </Grid>
-
+          {isAdmin && (
+            <Grid item >
+              <Button variant="contained" component={Link} to="/dashboard/admin/announcement/new" startIcon={<Iconify icon="eva:plus-fill" />}>
+                New Announcement
+              </Button>
+            </Grid>
+          )}
 
           <Grid item xs={12} md={12} lg={12}>
             <AppNewsUpdate

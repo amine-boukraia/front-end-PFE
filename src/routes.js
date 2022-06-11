@@ -6,6 +6,8 @@ import PrivateOutlet from './HOC/PrivateOutlet';
 //
 import Schedule from './pages/Schedule';
 import Docs from './pages/Docs';
+import Blog from './pages/Blog';
+import NewAnnouncement from "./pages/NewAnnouncement"
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import NewDoc from './pages/NewDoc';
@@ -24,20 +26,27 @@ export default function Router() {
         </PrivateOutlet>
       ),
       children: [
-        { path: 'annoucement', element: <DashboardApp /> },
+        { path: 'announcement', element: <DashboardApp /> },
         { path: 'docs', element: <Docs /> },
         { path: 'docs/new', element: <NewDoc /> },
         { path: 'results', element: <Products /> },
         { path: 'schedule', element: <Schedule /> },
         { path: 'clubs/:id', element: <Schedule /> },
         { path: 'clubs', element: <Schedule /> },
+        {
+          path: 'admin',
+          children: [
+            { path: 'announcement', element: <DashboardApp /> },
+            { path: 'announcement/new', element: <NewAnnouncement /> }
+          ],
+        },
       ],
     },
     {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/annoucement" /> },
+        { path: '/', element: <Navigate to="/dashboard/announcement" /> },
         { path: 'login', element: <Login /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },

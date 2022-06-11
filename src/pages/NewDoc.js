@@ -1,4 +1,4 @@
-import NewDocForm from "../sections/@dashboard/Docs/NewDocForm"
+import NewDocForm from "../sections/@dashboard/Forms/NewDocForm"
 
 export default function NewDoc(){
   return <>
