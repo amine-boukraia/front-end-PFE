@@ -39,7 +39,7 @@ export default function LoginForm() {
         } = await axiosInstance.post('student/login', data);
 
         localStorage.setItem('token', token);
-        navigate('/dashboard/annoucement');
+        navigate('/dashboard/announcement');
       } catch (error) {
         setError(error);
       } finally {

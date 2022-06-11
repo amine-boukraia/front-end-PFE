@@ -6,6 +6,8 @@ import PrivateOutlet from './HOC/PrivateOutlet';
 //
 import Schedule from './pages/Schedule';
 import Docs from './pages/Docs';
+import Students from './pages/Students';
+
 import Blog from './pages/Blog';
 import NewAnnouncement from "./pages/NewAnnouncement"
 import Login from './pages/Login';
@@ -13,6 +15,7 @@ import NotFound from './pages/Page404';
 import NewDoc from './pages/NewDoc';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
+import NewStudentForm from "./sections/@dashboard/Forms/NewStudentForm";
 
 // ----------------------------------------------------------------------
 
@@ -38,10 +41,12 @@ export default function Router() {
           children: [
             { path: 'announcement', element: <DashboardApp /> },
             { path: 'announcement/new', element: <NewAnnouncement /> },
-            { path: 'schedule', element: <Schedule /> },
+            { path: 'schedule/:id', element: <Schedule /> },
+            { path: 'students', element: <Students /> },
+            { path: 'students/new', element: <NewStudentForm /> },
             { path: 'docs', element: <Docs /> },
             { path: 'docs/new', element: <NewDoc /> },
-            { path: 'groups', element: <NewAnnouncement /> }
+            { path: 'groups', element: <Students /> }
           ],
         },
       ],

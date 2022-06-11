@@ -42,8 +42,8 @@ const navConfig = [
     for: 'admin',
   },
   {
-    title: 'Schedule',
-    path: '/dashboard/admin/schedule',
+    title: 'Students',
+    path: '/dashboard/admin/students',
     icon: getIcon('akar-icons:schedule'),
     for: 'admin',
   },
