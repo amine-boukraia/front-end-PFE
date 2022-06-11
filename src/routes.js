@@ -37,7 +37,11 @@ export default function Router() {
           path: 'admin',
           children: [
             { path: 'announcement', element: <DashboardApp /> },
-            { path: 'announcement/new', element: <NewAnnouncement /> }
+            { path: 'announcement/new', element: <NewAnnouncement /> },
+            { path: 'schedule', element: <Schedule /> },
+            { path: 'docs', element: <Docs /> },
+            { path: 'docs/new', element: <NewDoc /> },
+            { path: 'groups', element: <NewAnnouncement /> }
           ],
         },
       ],

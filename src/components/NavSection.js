@@ -141,15 +141,13 @@ NavSection.propTypes = {
 
 export default function NavSection({ navConfig, ...other }) {
   const { pathname } = useLocation();
-
+  const userType = window.location.pathname.includes("admin") ? 'admin' : 'student';
   const match = (path) => (path ? !!matchPath({ path, end: true }, pathname) : false);
 
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>
-        {navConfig.map((item) => (
-          <NavItem key={item.title} item={item} active={match} />
-        ))}
+        {navConfig.map((item) => userType === item.for && <NavItem key={item.title} item={item} active={match} />)}
       </List>
     </Box>
   );
