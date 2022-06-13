@@ -18,16 +18,28 @@ const navConfig = [
     icon: getIcon('eva:file-text-fill'),
     for: 'student',
   },
-  // {
-  //   title: 'Results',
-  //   path: '/dashboard/results',
-  //   icon: getIcon('icon-park-outline:doc-success'),
-  // },
   {
     title: 'Schedule',
     path: '/dashboard/schedule',
     icon: getIcon('akar-icons:schedule'),
     for: 'student',
+  },{
+    title: 'Annoucement',
+    path: '/dashboard/professor/announcement',
+    icon: getIcon('fa6-solid:bullhorn'),
+    for: 'professor',
+  },
+  {
+    title: 'Requested Docs',
+    path: '/dashboard/professor/docs',
+    icon: getIcon('eva:file-text-fill'),
+    for: 'professor',
+  },
+  {
+    title: 'Schedule',
+    path: '/dashboard/professor/schedule',
+    icon: getIcon('akar-icons:schedule'),
+    for: 'professor',
   },
   {
     title: 'Annoucement',

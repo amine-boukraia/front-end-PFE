@@ -73,15 +73,15 @@ export default function DashboardApp() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Exams" total="12/10/2022" color="info" icon={'ant-design:calendar-outlined'} />
+            <AppWidgetSummary title="Exams" total="12/01/2023" color="info" icon={'ant-design:calendar-outlined'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Class Stop" total="12/10/2022" color="warning" icon={'ant-design:calendar-outlined'} />
+            <AppWidgetSummary title="Class Stop" total="12/06/2023" color="warning" icon={'ant-design:calendar-outlined'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Class Stop - First Semester" total="12/10/2022" color="error" icon={'ant-design:calendar-outlined'} />
+            <AppWidgetSummary title="Class Stop - First Semester" total="01/02/2023" color="error" icon={'ant-design:calendar-outlined'} />
           </Grid>
           {isAdmin && (
             <Grid item >

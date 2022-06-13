@@ -141,7 +141,8 @@ NavSection.propTypes = {
 
 export default function NavSection({ navConfig, ...other }) {
   const { pathname } = useLocation();
-  const userType = window.location.pathname.includes("admin") ? 'admin' : 'student';
+  // eslint-disable-next-line no-nested-ternary
+  const userType = pathname.includes("/admin") ? 'admin' :pathname.includes("/professor") ? "professor"  : 'student';
   const match = (path) => (path ? !!matchPath({ path, end: true }, pathname) : false);
 
   return (

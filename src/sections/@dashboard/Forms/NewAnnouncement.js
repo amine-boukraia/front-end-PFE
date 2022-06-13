@@ -1,19 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import * as Yup from 'yup';
 import { Form, FormikProvider, useFormik } from 'formik';
-import {
-  Alert,
-  Checkbox,
-  Container,
-  FormControlLabel,
-  IconButton,
-  InputAdornment,
-  Stack,
-  TextField,
-} from '@mui/material';
+import { Alert, Container, Stack, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { VariantType, useSnackbar } from 'notistack';
+import { useSnackbar } from 'notistack';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import axiosInstance from '../../../axiosInstance';
 
 export default function NewAnnouncementForm() {
@@ -31,24 +23,26 @@ export default function NewAnnouncementForm() {
       description: '',
     },
     validationSchema: NewAnnouncementSchema,
-    onSubmit: async (data) => {
-      // try {
-      //   await axiosInstance.post('student/requestdocument', data);
-      //   enqueueSnackbar('Request sent successfully', { variant: 'success' });
-      //   navigate('/dashboard/docs');
-      // } catch (error) {
-      //   console.log(error);
-      // } finally {
-      //   setSubmitting(false);
-      // }
-      console.log('hello');
-      navigate('/dashboard/admin/announcement');
-      enqueueSnackbar('Announcement submitted successfully', { variant: 'success' });
+    onSubmit: async (value) => {
+      try {
+        const body = {
+          title: values.announcementName,
+          body: values.description,
+        };
+        await axiosInstance.post('admin/announcement', body);
+        navigate('/dashboard/admin/announcement');
+        enqueueSnackbar('Announcement submitted successfully', { variant: 'success' });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setSubmitting(false);
+      }
+
       setSubmitting(false);
     },
   });
 
-  const { errors, touched, values, isSubmitting, setSubmitting, handleSubmit, getFieldProps } = formik;
+  const { errors, touched, values, isSubmitting, setSubmitting, handleSubmit, getFieldProps, setFieldValue } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -64,14 +58,16 @@ export default function NewAnnouncementForm() {
               helperText={touched.announcementName && errors.announcementName}
             />
 
-            <TextField
-              fullWidth
-              type="text"
-              label="Description"
-              {...getFieldProps('description')}
-              error={Boolean(touched.description && errors.description)}
-              helperText={touched.description && errors.description}
+            <ReactQuill
+              value={values.description|| '<p></p>'}
+              onChange={(e) => setFieldValue('description', e, true)}
+              className="editor-holder"
             />
+            {Boolean(errors.description ) && (
+              <Stack direction="row" alignItems="center" sx={{ my: 2 }}>
+                <Alert severity="error">{touched.description && errors.description}</Alert>
+              </Stack>
+            )}
           </Stack>
 
           <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>

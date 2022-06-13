@@ -13,9 +13,11 @@ import NewAnnouncement from "./pages/NewAnnouncement"
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import NewDoc from './pages/NewDoc';
+import Groups from './pages/Groups';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import NewStudentForm from "./sections/@dashboard/Forms/NewStudentForm";
+import NewScheduleForm from "./sections/@dashboard/Forms/NewScheduleForm";
 
 // ----------------------------------------------------------------------
 
@@ -44,9 +46,18 @@ export default function Router() {
             { path: 'schedule/:id', element: <Schedule /> },
             { path: 'students', element: <Students /> },
             { path: 'students/new', element: <NewStudentForm /> },
+            { path: 'schedule/new', element: <NewScheduleForm /> },
             { path: 'docs', element: <Docs /> },
             { path: 'docs/new', element: <NewDoc /> },
-            { path: 'groups', element: <Students /> }
+            { path: 'groups', element: <Groups /> }
+          ],
+        },{
+          path: 'professor',
+          children: [
+            { path: 'announcement', element: <DashboardApp /> },
+            { path: 'schedule', element: <Schedule /> },
+            { path: 'docs', element: <Docs /> },
+            { path: 'docs/new', element: <NewDoc /> },
           ],
         },
       ],
