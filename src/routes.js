@@ -18,8 +18,8 @@ import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import NewStudentForm from './sections/@dashboard/Forms/NewStudentForm';
 import NewScheduleForm from './sections/@dashboard/Forms/NewScheduleForm';
-import NewAssignmentForm from "./sections/@dashboard/Forms/NewAssignment";
-import Assignment from "./pages/Assignment";
+import NewAssignmentForm from './sections/@dashboard/Forms/NewAssignment';
+import Assignment from './pages/Assignment';
 
 // ----------------------------------------------------------------------
 
@@ -30,21 +30,30 @@ function AdminRoute() {
     teacher: '/professor',
     admin: '/admin',
   };
-  return userType !== 'admin' ? (
-    <Navigate to={`/dashboard${url[userType] || url.student}/announcement`} />
-  ) : (
-    <Outlet />
-  );
+  return userType !== 'admin' ? <Navigate to={`/dashboard${url[userType] || url.student}/announcement`} /> : <Outlet />;
 }
 function ProfessorRoute() {
-
-  const  userType = localStorage.getItem('userType');
+  const userType = localStorage.getItem('userType');
   const url = {
     student: '',
     teacher: '/professor',
     admin: '/admin',
   };
   return userType !== 'teacher' ? (
+    <Navigate to={`/dashboard${url[userType] || url.student}/announcement`} />
+  ) : (
+    <Outlet />
+  );
+}
+
+function StudentRoute() {
+  const userType = localStorage.getItem('userType');
+  const url = {
+    student: '',
+    teacher: '/professor',
+    admin: '/admin',
+  };
+  return userType !== 'student' ? (
     <Navigate to={`/dashboard${url[userType] || url.student}/announcement`} />
   ) : (
     <Outlet />
@@ -61,14 +70,20 @@ export default function Router() {
         </PrivateOutlet>
       ),
       children: [
-        { path: 'announcement', element: <DashboardApp /> },
-        { path: 'docs', element: <Docs /> },
-        { path: 'docs/new', element: <NewDoc /> },
-        { path: 'results', element: <Products /> },
-        { path: 'schedule', element: <Schedule /> },
-        { path: 'clubs/:id', element: <Schedule /> },
-        { path: 'clubs', element: <Schedule /> },
-        { path: 'assignment', element: <Assignment /> },
+        {
+          path: '',
+          element: <StudentRoute />,
+          children: [
+            { path: 'announcement', element: <DashboardApp /> },
+            { path: 'docs', element: <Docs /> },
+            { path: 'docs/new', element: <NewDoc /> },
+            { path: 'results', element: <Products /> },
+            { path: 'schedule', element: <Schedule /> },
+            { path: 'clubs/:id', element: <Schedule /> },
+            { path: 'clubs', element: <Schedule /> },
+            { path: 'assignment', element: <Assignment /> },
+          ],
+        },
         {
           path: 'admin',
           element: <AdminRoute />,
@@ -86,7 +101,7 @@ export default function Router() {
         },
         {
           path: 'professor',
-          element: <ProfessorRoute/>,
+          element: <ProfessorRoute />,
           children: [
             { path: 'announcement', element: <DashboardApp /> },
             { path: 'schedule', element: <Schedule /> },
