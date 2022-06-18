@@ -24,6 +24,12 @@ const navConfig = [
     icon: getIcon('akar-icons:schedule'),
     for: 'student',
   },{
+    title: 'Assignment',
+    path: '/dashboard/Assignment',
+    icon: getIcon('ic:baseline-assignment-turned-in'),
+    for: 'student',
+  },
+  {
     title: 'Annoucement',
     path: '/dashboard/professor/announcement',
     icon: getIcon('fa6-solid:bullhorn'),
@@ -39,6 +45,12 @@ const navConfig = [
     title: 'Schedule',
     path: '/dashboard/professor/schedule',
     icon: getIcon('akar-icons:schedule'),
+    for: 'professor',
+  },
+  {
+    title: 'Assignment',
+    path: '/dashboard/professor/assignment',
+    icon: getIcon('ic:baseline-assignment-turned-in'),
     for: 'professor',
   },
   {

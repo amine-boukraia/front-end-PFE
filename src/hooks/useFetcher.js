@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../axiosInstance";
 
-export default function useFetcher(url, body) {
+export default function useFetcher(url, update) {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
@@ -23,7 +23,7 @@ export default function useFetcher(url, body) {
 
   useEffect(() => {
     getData()
-  }, []);
+  }, [update]);
 
   return { data, loading, error };
 }

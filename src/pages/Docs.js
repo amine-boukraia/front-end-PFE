@@ -15,8 +15,13 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-  CircularProgress
-} from "@mui/material";
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
 // components
 import Page from '../components/Page';
 import Label from '../components/Label';
@@ -27,7 +32,8 @@ import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashbo
 // mock
 import USERLIST from '../_mock/user';
 import useFetcher from '../hooks/useFetcher';
-import { fDate } from "../utils/formatTime";
+import useForceUpdate from '../hooks/useForceUpdate';
+import { fDate } from '../utils/formatTime';
 
 // ----------------------------------------------------------------------
 
@@ -66,12 +72,14 @@ function applySortFilter(array, comparator, query) {
   if (query) {
     return filter(array, (_user) => {
       return _user?.docTitle && _user.docTitle.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-    } );
+    });
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function Docs() {
+  const { revision,forceUpdate } = useForceUpdate()
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -83,8 +91,12 @@ export default function Docs() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const { data, error, loading } = useFetcher('/student/requesteddocs');
+  const userType = localStorage.getItem('userType');
+  const docsUrl = {
+    admin: `/${userType}/documents`,
+    student: `/${userType}/requesteddocs`,
+  };
+    const { data, error, loading } = useFetcher( docsUrl[userType] || docsUrl.student,revision);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -129,9 +141,9 @@ export default function Docs() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data?.length || 0) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data?.data?.length || 0) : 0;
 
-  const filteredDocs = applySortFilter(data || [], getComparator(order, orderBy), filterName);
+  const filteredDocs = applySortFilter(data?.data || [], getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredDocs.length === 0;
 
@@ -143,98 +155,103 @@ export default function Docs() {
             Documents
           </Typography>
 
-
-
-          <Button variant="contained" component={RouterLink} to="/dashboard/docs/new" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            variant="contained"
+            component={RouterLink}
+            to="/dashboard/docs/new"
+            startIcon={<Iconify icon="eva:plus-fill" />}
+          >
             New Document
           </Button>
-
         </Stack>
 
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           {loading ? (
-            <Stack my={"10px"} alignItems="center" justifyContent="center">
+            <Stack my={'10px'} alignItems="center" justifyContent="center">
               <CircularProgress />
             </Stack>
           ) : (
-            data &&  <>
-              <Scrollbar>
-                <TableContainer sx={{ minWidth: 800 }}>
-                  <Table>
-                    <UserListHead
-                      order={order}
-                      orderBy={orderBy}
-                      headLabel={TABLE_HEAD}
-                      rowCount={data.length}
-                      numSelected={selected.length}
-                      onRequestSort={handleRequestSort}
-                      onSelectAllClick={handleSelectAllClick}
-                    />
-                    <TableBody>
-                      {filteredDocs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                        const { _id,  docTitle = "document" ,  fulfilled, reqTime } = row;
-                        const isItemSelected = selected.indexOf(docTitle) !== -1;
+            data?.data && (
+              <>
+                <Scrollbar>
+                  <TableContainer sx={{ minWidth: 800 }}>
+                    <Table>
+                      <UserListHead
+                        order={order}
+                        orderBy={orderBy}
+                        headLabel={TABLE_HEAD}
+                        rowCount={data?.data?.length}
+                        numSelected={selected.length}
+                        onRequestSort={handleRequestSort}
+                        onSelectAllClick={handleSelectAllClick}
+                      />
+                      <TableBody>
+                        {filteredDocs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                          const { _id, docTitle = 'document', fulfilled, reqTime } = row;
+                          const isItemSelected = selected.indexOf(docTitle) !== -1;
 
-                        return (
-                          <TableRow
-                            hover
-                            key={_id}
-                            tabIndex={-1}
-                            role="checkbox"
-                            selected={isItemSelected}
-                            aria-checked={isItemSelected}
-                          >
-                            <TableCell component="th" scope="row" padding="normal">
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                <Typography variant="subtitle2" noWrap>
-                                  {docTitle}
-                                </Typography>
-                              </Stack>
-                            </TableCell>
-                            <TableCell align="left">{fDate(reqTime)}</TableCell>
-                            <TableCell align="left">
-                              <Label variant="ghost" color={fulfilled  ? 'success'  : 'warning'}>
-                                {sentenceCase(fulfilled ? 'success'  : 'Pending')}
-                              </Label>
-                            </TableCell>
+                          return (
+                            <TableRow
+                              hover
+                              key={_id}
+                              tabIndex={-1}
+                              role="checkbox"
+                              selected={isItemSelected}
+                              aria-checked={isItemSelected}
+                            >
+                              <TableCell component="th" scope="row" padding="normal">
+                                <Stack direction="row" alignItems="center" spacing={2}>
+                                  <Typography variant="subtitle2" noWrap>
+                                    {docTitle}
+                                  </Typography>
+                                </Stack>
+                              </TableCell>
+                              <TableCell align="left">{fDate(reqTime)}</TableCell>
+                              <TableCell align="left">
+                                <Label variant="ghost" color={fulfilled ? 'success' : 'warning'}>
+                                  {sentenceCase(fulfilled ? 'success' : 'Pending')}
+                                </Label>
+                              </TableCell>
+                              {userType === 'admin' && (
+                                <TableCell align="right">
+                                  <UserMoreMenu forceUpdate={forceUpdate} docTitle={docTitle} id={_id} />
+                                </TableCell>
+                              )}
+                            </TableRow>
+                          );
+                        })}
+                        {emptyRows > 0 && (
+                          <TableRow style={{ height: 53 * emptyRows }}>
+                            <TableCell colSpan={6} />
+                          </TableRow>
+                        )}
+                      </TableBody>
 
-                            <TableCell align="right">
-                              <UserMoreMenu />
+                      {isUserNotFound && (
+                        <TableBody>
+                          <TableRow>
+                            <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                              <SearchNotFound searchQuery={filterName} />
                             </TableCell>
                           </TableRow>
-                        );
-                      })}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
-                        </TableRow>
+                        </TableBody>
                       )}
-                    </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Scrollbar>
 
-                    {isUserNotFound && (
-                      <TableBody>
-                        <TableRow>
-                          <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                            <SearchNotFound searchQuery={filterName} />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Scrollbar>
-
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  component="div"
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </>
+            )
           )}
         </Card>
       </Container>

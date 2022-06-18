@@ -3,7 +3,18 @@ import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 // material
-import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel, Alert } from '@mui/material';
+import {
+  Link,
+  Stack,
+  Checkbox,
+  TextField,
+  IconButton,
+  InputAdornment,
+  FormControlLabel,
+  Alert,
+  Select,
+  MenuItem, InputLabel, FormControl
+} from "@mui/material";
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
@@ -22,24 +33,33 @@ export default function LoginForm() {
   const LoginSchema = Yup.object().shape({
     CIN: Yup.string().required('CIN is required'),
     password: Yup.string().required('Password is required'),
+    type: Yup.string().min(2).required('Type is required'),
   });
 
   const formik = useFormik({
     initialValues: {
       CIN: '',
       password: '',
+      type: '',
       remember: true,
     },
     validationSchema: LoginSchema,
     onSubmit: async (data) => {
       setError(null);
+      const route = {
+        teacher : "/professor",
+        student:"",
+        admin:"/admin"
+      }
       try {
         const {
           data: { token },
-        } = await axiosInstance.post('student/login', data);
+        } = await axiosInstance.post(`${data.type === 'teacher' ? 'teacher' : 'student'}/login`, data);
 
+        const redirectUrl = `/dashboard${route[data.type] || ""}/announcement`
         localStorage.setItem('token', token);
-        navigate('/dashboard/announcement');
+        localStorage.setItem('userType',data.type)
+        navigate(redirectUrl);
       } catch (error) {
         setError(error);
       } finally {
@@ -86,7 +106,23 @@ export default function LoginForm() {
             helperText={touched.password && errors.password}
           />
         </Stack>
+        <Stack sx={{ my: 4 }} >
+          <FormControl >
+            <InputLabel id="userType">Type of User</InputLabel>
+            <Select
+              label="Type of User"
+              id="userType"
+              {...getFieldProps('type')}
+              error={Boolean(touched.type && errors.type)}
+              helperText={touched.type && errors.type}
+            >
+              <MenuItem value={'student'}>Student</MenuItem>
+              <MenuItem value={'admin'}>Admin</MenuItem>
+              <MenuItem value={'teacher'}>Professor</MenuItem>
+            </Select>
+          </FormControl>
 
+        </Stack>
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
           <FormControlLabel
             control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}

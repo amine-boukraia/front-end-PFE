@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
@@ -9,17 +9,47 @@ import Docs from './pages/Docs';
 import Students from './pages/Students';
 
 import Blog from './pages/Blog';
-import NewAnnouncement from "./pages/NewAnnouncement"
+import NewAnnouncement from './pages/NewAnnouncement';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import NewDoc from './pages/NewDoc';
 import Groups from './pages/Groups';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
-import NewStudentForm from "./sections/@dashboard/Forms/NewStudentForm";
-import NewScheduleForm from "./sections/@dashboard/Forms/NewScheduleForm";
+import NewStudentForm from './sections/@dashboard/Forms/NewStudentForm';
+import NewScheduleForm from './sections/@dashboard/Forms/NewScheduleForm';
+import NewAssignmentForm from "./sections/@dashboard/Forms/NewAssignment";
+import Assignment from "./pages/Assignment";
 
 // ----------------------------------------------------------------------
+
+function AdminRoute() {
+  const userType = localStorage.getItem('userType');
+  const url = {
+    student: '',
+    teacher: '/professor',
+    admin: '/admin',
+  };
+  return userType !== 'admin' ? (
+    <Navigate to={`/dashboard${url[userType] || url.student}/announcement`} />
+  ) : (
+    <Outlet />
+  );
+}
+function ProfessorRoute() {
+
+  const  userType = localStorage.getItem('userType');
+  const url = {
+    student: '',
+    teacher: '/professor',
+    admin: '/admin',
+  };
+  return userType !== 'teacher' ? (
+    <Navigate to={`/dashboard${url[userType] || url.student}/announcement`} />
+  ) : (
+    <Outlet />
+  );
+}
 
 export default function Router() {
   return useRoutes([
@@ -38,8 +68,10 @@ export default function Router() {
         { path: 'schedule', element: <Schedule /> },
         { path: 'clubs/:id', element: <Schedule /> },
         { path: 'clubs', element: <Schedule /> },
+        { path: 'assignment', element: <Assignment /> },
         {
           path: 'admin',
+          element: <AdminRoute />,
           children: [
             { path: 'announcement', element: <DashboardApp /> },
             { path: 'announcement/new', element: <NewAnnouncement /> },
@@ -49,15 +81,19 @@ export default function Router() {
             { path: 'schedule/new', element: <NewScheduleForm /> },
             { path: 'docs', element: <Docs /> },
             { path: 'docs/new', element: <NewDoc /> },
-            { path: 'groups', element: <Groups /> }
+            { path: 'groups', element: <Groups /> },
           ],
-        },{
+        },
+        {
           path: 'professor',
+          element: <ProfessorRoute/>,
           children: [
             { path: 'announcement', element: <DashboardApp /> },
             { path: 'schedule', element: <Schedule /> },
             { path: 'docs', element: <Docs /> },
             { path: 'docs/new', element: <NewDoc /> },
+            { path: 'assignment', element: <Assignment /> },
+            { path: 'assignment/new', element: <NewAssignmentForm /> },
           ],
         },
       ],

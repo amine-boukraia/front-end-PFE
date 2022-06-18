@@ -28,13 +28,8 @@ export default function AppNewsUpdate({ title, subheader, list, ...other }) {
         </Stack>
       </Scrollbar>
 
-      <Divider />
 
-      <Box sx={{ p: 2, textAlign: 'right' }}>
-        <Button size="small" color="inherit" endIcon={<Iconify icon={'eva:arrow-ios-forward-fill'} />}>
-          View all
-        </Button>
-      </Box>
+
     </Card>
   );
 }
@@ -51,7 +46,7 @@ NewsItem.propTypes = {
 };
 
 function NewsItem({ news }) {
-  const { image, title, description, postedAt } = news;
+  const { image="http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg", title, body, postedAt } = news;
 
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
@@ -62,9 +57,8 @@ function NewsItem({ news }) {
           {title}
         </Link>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }} >
-          {description}
-        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }} dangerouslySetInnerHTML={{ __html:body }} />
+
       </Box>
 
       <Typography variant="caption" sx={{ pr: 3, flexShrink: 0, color: 'text.secondary' }}>

@@ -1,14 +1,20 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { Form, FormikProvider, useFormik } from 'formik';
 import {
   Alert,
   Checkbox,
+  CircularProgress,
   Container,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   IconButton,
   InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
 } from '@mui/material';
@@ -16,43 +22,47 @@ import { LoadingButton } from '@mui/lab';
 import { VariantType, useSnackbar } from 'notistack';
 import axiosInstance from '../../../axiosInstance';
 import Iconify from '../../../components/Iconify';
+import useFetcher from '../../../hooks/useFetcher';
+
 
 export default function NewStudentForm() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { data, loading } = useFetcher('/admin/groups');
 
   const NewStudentSchema = Yup.object().shape({
     group: Yup.string().required('group name is required'),
-    subgroup: Yup.string().required('subgroup is required'),
+    subGroup: Yup.string().required('subgroup is required'),
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
-    cin: Yup.string().required('CIN is required'),
-
+    CIN: Yup.string()
+      .required("CIN is required")
+      .matches(/^[0-9\s]+$/, "Only Integers are allowed for CIN"),
   });
 
   const formik = useFormik({
     initialValues: {
-      group: "",
-      subgroup: "",
-      firstName: "",
-      lastName: "",
-      cin: "",
+      group: '',
+      subGroup: '',
+      firstName: '',
+      lastName: '',
+      CIN: '',
     },
     validationSchema: NewStudentSchema,
     onSubmit: async (data) => {
-      // try {
-      //   await axiosInstance.post('student/requestdocument', data);
-      //   enqueueSnackbar('Request sent successfully', { variant: 'success' });
-      //   navigate('/dashboard/docs');
-      // } catch (error) {
-      //   console.log(error);
-      // } finally {
-      //   setSubmitting(false);
-      // }
+      try {
+        await axiosInstance.post('admin/student', data);
+        enqueueSnackbar('student added successfully', { variant: 'success' });
+        navigate('/dashboard/admin/students');
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setSubmitting(false);
+      }
 
-      navigate('/dashboard/admin/students');
-      enqueueSnackbar('student added successfully', { variant: 'success' });
-      setSubmitting(false);
+
+
+
     },
   });
 
@@ -67,9 +77,9 @@ export default function NewStudentForm() {
               fullWidth
               type="text"
               label="CIN"
-              {...getFieldProps('cin')}
-              error={Boolean(touched.cin && errors.cin)}
-              helperText={touched.cin && errors.cin}
+              {...getFieldProps('CIN')}
+              error={Boolean(touched.CIN && errors.CIN)}
+              helperText={touched.CIN && errors.CIN}
             />
 
             <TextField
@@ -88,22 +98,56 @@ export default function NewStudentForm() {
               error={Boolean(touched.lastName && errors.lastName)}
               helperText={touched.lastName && errors.lastName}
             />
-            <TextField
-              fullWidth
-              type="text"
-              label="Group"
-              {...getFieldProps('group')}
-              error={Boolean(touched.group && errors.group)}
-              helperText={touched.group && errors.group}
-            />
-            <TextField
-              fullWidth
-              type="text"
-              label="Sub Group"
-              {...getFieldProps('subgroup')}
-              error={Boolean(touched.subgroup && errors.subgroup)}
-              helperText={touched.subgroup && errors.subgroup}
-            />
+            <Stack sx={{ my: 4 }}>
+              {loading && !data?.data ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <FormControl sx={{ mb: 4 }}>
+                    <InputLabel id="group">Group</InputLabel>
+                    <Select
+                      label="Group"
+                      id="group"
+                      {...getFieldProps('group')}
+                      error={Boolean(touched.group && errors.group)}
+                      helperText={touched.group && errors.group}
+                    >
+                      {data?.data.map((group) => (
+                        <MenuItem key={group.groupCode} value={group.groupCode}>
+                          {group.groupCode}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {touched.group && errors.group ? (
+                      <FormHelperText error>{touched.group && errors.group}</FormHelperText>
+                    ) : null}
+                  </FormControl>
+                  <FormControl>
+                    <InputLabel id="subGroup">Sub Group</InputLabel>
+                    <Select
+                      label="Sub Group"
+                      id="subGroup"
+                      {...getFieldProps('subGroup')}
+                      error={Boolean(touched.subGroup && errors.subGroup)}
+                      helperText={touched.subGroup && errors.subGroup}
+                    >
+                      {data?.data
+                        .filter((group) => group.groupCode === values.group)
+                        .map((group) => {
+                          return group.subGroup.map((subgroup) => (
+                            <MenuItem key={subgroup.subGroupCode} value={subgroup.subGroupCode}>
+                              {subgroup.subGroupCode}
+                            </MenuItem>
+                          ));
+                        })}
+                    </Select>
+                    {touched.subGroup && errors.subGroup ? (
+                      <FormHelperText error>{touched.subGroup && errors.subGroup}</FormHelperText>
+                    ) : null}
+                  </FormControl>
+                </>
+              )}
+            </Stack>
           </Stack>
 
           <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>

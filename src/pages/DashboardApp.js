@@ -18,48 +18,15 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+import useFetcher from "../hooks/useFetcher";
 
 // ----------------------------------------------------------------------
-const announcements = [{
-  id:faker.time,
-  title: "CALENDRIERS DES DEVOIRS DE CONTRÔLE SEMESTRE 2 A.U. 21-22",
-  description: faker.lorem.lines("5"),
-  image: `http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg`,
-  postedAt: faker.date.recent(),
-},{
-  id:faker.time,
-  title: "CALENDRIERS DES DEVOIRS DE CONTRÔLE SEMESTRE 2 A.U. 21-22",
-  description: faker.lorem.lines("5"),
-  image: `http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg`,
-  postedAt: faker.date.recent(),
-},{
-  id:faker.time,
-  title: "CALENDRIERS DES DEVOIRS DE CONTRÔLE SEMESTRE 2 A.U. 21-22",
-  description: faker.lorem.lines("5"),
-  image: `http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg`,
-  postedAt: faker.date.recent(),
-},{
-  id:faker.time,
-  title: "CALENDRIERS DES DEVOIRS DE CONTRÔLE SEMESTRE 2 A.U. 21-22",
-  description: faker.lorem.lines("5"),
-  image: `http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg`,
-  postedAt: faker.date.recent(),
-},{
-  id:faker.time,
-  title: "CALENDRIERS DES DEVOIRS DE CONTRÔLE SEMESTRE 2 A.U. 21-22",
-  description: faker.lorem.lines("5"),
-  image: `http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg`,
-  postedAt: faker.date.recent(),
-},{
-  id:faker.time,
-  title: "CALENDRIERS DES DEVOIRS DE CONTRÔLE SEMESTRE 2 A.U. 21-22",
-  description: faker.lorem.lines("5"),
-  image: `http://www.isetta.rnu.tn/stylesheets/images/banners/mini/cours.jpg`,
-  postedAt: faker.date.recent(),
-},]
+
 export default function DashboardApp() {
   const theme = useTheme();
+  const {data,error,loading} = useFetcher(`${process.env.REACT_APP_API_BASE_URL}/admin/annoucements`)
   const isAdmin = window.location.pathname.includes("/admin")
+
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
@@ -94,7 +61,7 @@ export default function DashboardApp() {
           <Grid item xs={12} md={12} lg={12}>
             <AppNewsUpdate
               title="Annoucements"
-              list={announcements}
+              list={data?.data || []}
             />
           </Grid>
 
