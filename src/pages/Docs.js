@@ -78,7 +78,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function Docs() {
-  const { revision,forceUpdate } = useForceUpdate()
+  const { revision, forceUpdate } = useForceUpdate();
 
   const [page, setPage] = useState(0);
 
@@ -96,7 +96,7 @@ export default function Docs() {
     admin: `/${userType}/documents`,
     student: `/${userType}/requesteddocs`,
   };
-    const { data, error, loading } = useFetcher( docsUrl[userType] || docsUrl.student,revision);
+  const { data, error, loading } = useFetcher(docsUrl[userType] || docsUrl.student, revision);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -244,7 +244,7 @@ export default function Docs() {
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25]}
                   component="div"
-                  count={data.length}
+                  count={data?.data.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onPageChange={handleChangePage}
